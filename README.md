@@ -2,9 +2,6 @@
 
 This repository collects material related to the data analysis activities carried out for the LSPE-Strip experiment.
 
-
-### Main directory
-
 The main directory contains:
 
 - **`Thesis.pdf`**  

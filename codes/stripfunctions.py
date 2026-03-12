@@ -679,10 +679,9 @@ def save_thermal_data(ds, mjd_ranges, sensor_name, save_path, get_raw=False):
 #--------------------------------------------------------------------------------------------------------------------------------
 # Plot
 
-def save_plot(fig, mjd_range, save_path, dir_name, plot_name):
+def save_plot(fig, save_path, dir_name, plot_name):
     
-    file_date = Time(mjd_range[0], format="mjd").datetime.strftime("%Y_%m_%d_%H-%M-%S")
-    save_dir = os.path.join(save_path, file_date, dir_name)
+    save_dir = os.path.join(save_path, dir_name)
     os.makedirs(save_dir, exist_ok=True)
     plot_name += ".png"
     save_fig = os.path.join(save_dir, plot_name)
@@ -693,8 +692,10 @@ def save_plot(fig, mjd_range, save_path, dir_name, plot_name):
     
 
 def plot_data(data_diz, mjd_range, save_path=None, save=False):
+    
     biases = InstrumentBiases()
     t0 = Time(mjd_range[0], format="mjd").unix
+    dir_name = Time(mjd_range[0], format="mjd").datetime.strftime("%Y_%m_%d_%H-%M-%S")
 
     for pol, pars in data_diz.items():
         pol_name = biases.module_name_to_polarimeter(f"{pol}")
@@ -713,11 +714,13 @@ def plot_data(data_diz, mjd_range, save_path=None, save=False):
             fig.tight_layout()
 
             if save:
-                save_plot(fig, mjd_range, save_path, f"{pol}", f"{pol}_{par}") 
+                save_plot(fig, save_path, dir_name, f"{pol}_{par}") 
                 
                 
 def plot_spec(spec_diz, mjd_range, save_path=None, save=False):
+    
     biases = InstrumentBiases()
+    dir_name = Time(mjd_range[0], format="mjd").datetime.strftime("%Y_%m_%d_%H-%M-%S")
     
     for pol, pars in spec_diz.items():
         pol_name = biases.module_name_to_polarimeter(f"{pol}")
@@ -736,4 +739,4 @@ def plot_spec(spec_diz, mjd_range, save_path=None, save=False):
             fig.tight_layout()
 
             if save:
-                save_plot(fig, mjd_range, save_path, f"{pol}", f"{pol}_{par}")  
+                save_plot(fig, save_path, dir_name, f"{pol}_{par}")  

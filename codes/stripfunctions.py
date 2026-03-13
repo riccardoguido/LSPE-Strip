@@ -551,20 +551,24 @@ def remove_spikes(data_diz, window_sec):
             guess = [A, t0, w]
 
             # Spike fitting
-            popt, _ = curve_fit(
-                lambda t, A, t0, w: square_smooth(t, A, t0, w),
-                time_window,
-                spike_avg,
-                p0=guess
-            )
-            spike_fit = square_smooth(time_window, *popt)
+            try:
+                popt, _ = curve_fit(
+                    lambda t, A, t0, w: square_smooth(t, A, t0, w),
+                    time_window,
+                    spike_avg,
+                    p0=guess
+                )
+                spike_fit = square_smooth(time_window, *popt)
 
-            # Repeat the average spike pattern to match the signal length
-            r = int(np.ceil(len(data) / n_samples))
-            data_spikes = np.tile(spike_fit, r)[:len(data)]
+                # Repeat the average spike pattern to match the signal length
+                r = int(np.ceil(len(data) / n_samples))
+                data_spikes = np.tile(spike_fit, r)[:len(data)]
 
-            # Subtract the periodic component from the original signal
-            data_cleaned = data - data_spikes
+                # Subtract the periodic component from the original signal
+                data_cleaned = data - data_spikes
+                
+            except RuntimeError:
+                data_cleaned = data
            
             # Save the results in the dictionary
             data_clean_diz[pol][det] = {
